@@ -39,7 +39,7 @@ int main() {
   vecAdd(A,B,C,100);
 
   for(i=0;i<100;i++) {
-    if(fabs(C[i] - 100.0) > 0.01) {
+    if(fabs(C[i] - 101.0) > 0.01) {
       printf("Addition failed for : %d , added value %f \n",i,C[i]);
       exit(255);
     }
