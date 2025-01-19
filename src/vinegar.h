@@ -1,4 +1,7 @@
+#include <stdio.h>
+#include <stdlib.h>
 #include "cuda.h"
+
 #define CHECKED_CUDA_API(api) { \
     cudaError_t err = api; \
     if (error != cudaSuccess) { \
