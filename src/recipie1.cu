@@ -28,3 +28,23 @@ void vecAdd(float *A, float *B, float *C, int n) {
 
 }
 
+int main() {
+  float A[100],B[100],C[100];
+  int i=0;
+  for(i=0;i<100;i++) {
+    A[i] = (float)i+1;
+    B[i] = (float)(100-i);
+  }
+
+  vecAdd(A,B,C,100);
+
+  for(i=0;i<100;i++) {
+    if(fabs(C[i] - 100.0) > 0.01) {
+      print("Addition failed for : %d \n",i);
+      exit(255);
+    }
+  }
+
+  print("Addition success ! \n");
+}
+

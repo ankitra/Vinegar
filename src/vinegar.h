@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 #include "cuda.h"
 
 #define CHECKED_CUDA_API(api) { \
