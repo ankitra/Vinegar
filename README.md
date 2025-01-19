@@ -1,2 +1,2 @@
 # Vinegar
-Vinegar Bottle
+Vinegar Bottle for cooking purposes.
