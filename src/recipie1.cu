@@ -40,7 +40,7 @@ int main() {
 
   for(i=0;i<100;i++) {
     if(fabs(C[i] - 100.0) > 0.01) {
-      printf("Addition failed for : %d \n",i);
+      printf("Addition failed for : %d , added value %f \n",i,C[i]);
       exit(255);
     }
   }
