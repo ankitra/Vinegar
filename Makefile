@@ -1,2 +1,2 @@
-recipie1: recipie1.cu vinegar.h
-	nvcc -o recipie1 recipie1.cu
+recipie1: src/recipie1.cu src/vinegar.h
+	nvcc -o recipie1 src/recipie1.cu
