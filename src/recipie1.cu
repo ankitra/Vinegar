@@ -40,11 +40,11 @@ int main() {
 
   for(i=0;i<100;i++) {
     if(fabs(C[i] - 100.0) > 0.01) {
-      print("Addition failed for : %d \n",i);
+      printf("Addition failed for : %d \n",i);
       exit(255);
     }
   }
 
-  print("Addition success ! \n");
+  printf("Addition success ! \n");
 }
 
