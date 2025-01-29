@@ -58,9 +58,9 @@
             float elapsedTime;                                         \
             CHECKED_CUDA_API(cudaEventCreate(&start));                 \
             CHECKED_CUDA_API(cudaEventCreate(&stop));                  \
-            CHECKED_CUDA_API(cudaRecordEvent(start, 0));               \
+            CHECKED_CUDA_API(cudaEventRecord(start, 0));               \
             cuda_invoke;                                               \
-            CHECKED_CUDA_API(cudaRecordEvent(stop, 0));                \
+            CHECKED_CUDA_API(cudaEventRecord(stop, 0));                \
             cudaEventSynchronize(stop);                                \
             cudaEventElapsedTime(&elapsedTime, start, stop);           \
             DEBUG_LOG("Time elapsed %f for %s", elapsedTime, message); \
