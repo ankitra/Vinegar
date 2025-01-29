@@ -73,7 +73,8 @@ int main(int argc, char **argv) {
 
     CHECKED_CUDA_API(cudaMemcpy(image_d, image, size, cudaMemcpyHostToDevice));
 
-    softenImageRGBKernel<<<blocksInGrid, threadsInBlock>>>(image_d, outputImage_d, width, height, channels);
+    TIME_CUDA("Convolution Kernel", softenImageRGBKernel<<<blocksInGrid, threadsInBlock>>>(image_d, outputImage_d, width, height, channels));
+    
     CHECKED_CUDA_API(cudaGetLastError());                                                                    
     
     CHECKED_CUDA_API(cudaDeviceSynchronize());
