@@ -74,6 +74,7 @@ int main(int argc, char **argv) {
     CHECKED_CUDA_API(cudaMemcpy(image_d, image, size, cudaMemcpyHostToDevice));
 
     #define invocation softenImageRGBKernel<<<blocksInGrid, threadsInBlock>>>(image_d, outputImage_d, width, height, channels)
+    DEBUG_LOG("Invoking Kernel");
     TIME_CUDA("Convolution Kernel", invocation);
     
     CHECKED_CUDA_API(cudaGetLastError());                                                                    
