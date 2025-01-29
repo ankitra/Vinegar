@@ -1,7 +1,7 @@
 src_dir = src
 external = external
 
-compile_flags = -D DEBUG -D INSTRUMENT -I $(external)/
+compile_flags = -D DEBUG -D INSTRUMENTED -I $(external)/
 
 .PHONY: clean all
 
