@@ -33,7 +33,7 @@ void softenImageRGBKernel(unsigned char * image, unsigned char * imageOutput, \
 
     for(i = kernel_lower; i <= kernel_upper; i++) {
         for(j = kernel_lower; j <= kernel_upper; j++) {
-            if(row+i >= 0 && row+i < width && col+j>=0 && col+j < height) { 
+            if(row+i >= 0 && row+i < height && col+j>=0 && col+j < width) { 
                 pixel += (*(INTERLEAVED(row+i, col+j, image, width,channels, offset ))) * softFilterKernel[i+kernel_half][j+kernel_half];
                 totalFilter += softFilterKernel[i+kernel_half][j+kernel_half];
             }
@@ -59,8 +59,8 @@ int main(int argc, char **argv) {
     unsigned char * image_d, * outputImage_d;
 
     dim3 threadsInBlock(32, 32, 1);
-    dim3 blocksInGrid((width + threadsInBlock.x -1)/threadsInBlock.x,
-                      (height + threadsInBlock.y -1)/threadsInBlock.y, 
+    dim3 blocksInGrid((height + threadsInBlock.x -1)/threadsInBlock.x,
+                      (width + threadsInBlock.y -1)/threadsInBlock.y, 
                       channels);
 
     if(image == NULL || outputImage == NULL) {
