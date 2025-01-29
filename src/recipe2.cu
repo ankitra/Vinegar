@@ -33,7 +33,7 @@ void softenImageRGBKernel(unsigned char * image, unsigned char * imageOutput, \
 
     for(i = kernel_lower; i <= kernel_upper; i++) {
         for(j = kernel_lower; j <= kernel_upper; j++) {
-            if(row+i >= 0 && row+i < height && col+j>=0 && col+j < width) { 
+            if(row+i >= 0 && row+i < width && col+j>=0 && col+j < height) { 
                 pixel += (*(INTERLEAVED(row+i, col+j, image, width,channels, offset ))) * softFilterKernel[i+kernel_half][j+kernel_half];
                 totalFilter += softFilterKernel[i+kernel_half][j+kernel_half];
             }
