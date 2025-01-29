@@ -43,6 +43,11 @@
     #define DEBUG_LOG(fmt, ...)
 #endif
 
+#define ERROR_LOG(fmt, ...) do { \
+    fprintf(stderr, "[ERROR] " fmt "\n", ##__VA_ARGS__); \
+    fflush(stderr); \
+} while (0)
+
 // Instrument the kernel execution time, report the metrics on stderr
 #ifdef INSTRUMENTED
 
