@@ -63,7 +63,7 @@
             CHECKED_CUDA_API(cudaEventRecord(stop, 0));                \
             cudaEventSynchronize(stop);                                \
             cudaEventElapsedTime(&elapsedTime, start, stop);           \
-            DEBUG_LOG("Time elapsed %f for %s", elapsedTime, message); \
+            DEBUG_LOG("Time elapsed %.3f ms for %s", elapsedTime, message); \
             fflush(stderr);                                            \
             CHECKED_CUDA_API(cudaEventDestroy(start));                 \
             CHECKED_CUDA_API(cudaEventDestroy(stop));                  \
