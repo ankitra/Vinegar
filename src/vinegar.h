@@ -5,13 +5,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#include "cuda.h"
+#include "cuda_runtime.h"
 
-#ifndef _RED_DOT_VINEGAR_DOT_H_
-#define _RED_DOT_VINEGAR_DOT_H_
+#ifndef RED_DOT_VINEGAR_DOT_H
+#define RED_DOT_VINEGAR_DOT_H
 
 // Call Cuda and exit if it did not work.
-#define CHECKED_CUDA_API(api)                                                                      \
+#define CHECKED_CUDA_CALL(api)                                                                      \
     do                                                                                             \
     {                                                                                              \
         cudaError_t err = api;                                                                     \
@@ -28,11 +28,11 @@
 #define Y_DIM y
 #define Z_DIM z
 
-// Offset in current thread
+// Offset in current thread, use the dimensions out of X_DIM, Y_DIM and Z_DIM.
 #define THREAD_OFFSET(dimension) (threadIdx.dimension + blockDim.dimension * blockIdx.dimension)
 
 // ANSI C makes sizeof(char) as always 1 byte, irrespective of what processor and architecture is.
-// It will change definition of 1 byte to accomodate that.
+// It will change definition of 1 byte to accommodate that.
 #define ROW_MAJOR(row, col, base, row_elements, type) (type *)((char *)(base) + (((row) * (row_elements) + (col)) * (sizeof(type))))
 #define COL_MAJOR(row, col, base, col_elements, type) (type *)((char *)(base) + (((col) * (col_elements) + (row)) * (sizeof(type))))
 
@@ -70,9 +70,7 @@
         } while (0)
 
 #else
-
     #define TIME_CUDA(message, cuda_invoke) cuda_invoke
-
 #endif
 
 #endif
