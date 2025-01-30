@@ -11,7 +11,7 @@
 #define RED_DOT_VINEGAR_DOT_H
 
 // Call Cuda and exit if it did not work.
-#define CHECKED_CUDA_CALL(api)                                                                      \
+#define CHECKED_CUDA_API(api)                                                                      \
     do                                                                                             \
     {                                                                                              \
         cudaError_t err = api;                                                                     \
