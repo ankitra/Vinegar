@@ -1,7 +1,18 @@
+#include "vinegar.h"
+
+void * recipie2_malloc(size_t);
+void * recipie2_realloc(void *, size_t);
+void   recipie2_free(void *);
+
 #define STB_IMAGE_IMPLEMENTATION
 #define STB_IMAGE_WRITE_IMPLEMENTATION
+#define STBI_MALLOC(sz)           recipie2_malloc(sz)
+#define STBI_REALLOC(p,newsz)     
+#define STBI_REALLOC_SIZED(p,oldsz,newsz) STBI_REALLOC(p,newsz)
+#define STBI_FREE(p)              recipie2_free(p)
+
+
 #include "stb_image.h"
-#include "vinegar.h"
 #include "stb_image_write.h"
 
 #define INTERLEAVED(row, col, base, width, channels, offset) ROW_MAJOR(row, (channels)*(col) + offset, base, (width)*(channels), unsigned char)
@@ -44,6 +55,24 @@ void softenImageRGBKernel(unsigned char * image, unsigned char * imageOutput, \
 
 }
 
+void * recipie2_malloc(size_t size) {
+    void * ptr;
+    CHECKED_CUDA_API(cudaMallocHost(&ptr, size));
+    return ptr;
+}
+
+void recipie2_free(void * ptr) {
+    CHECKED_CUDA_API(cudaFreeHost(ptr));
+}
+
+void * recipie2_realloc(void * ptr, size_t oldsize, size_t size){
+    void * newptr;
+    CHECKED_CUDA_API(cudaMallocHost(&newptr, size));
+    memcpy(newptr,ptr,oldsize);
+    CHECKED_CUDA_API(cudaFreeHost(ptr));
+    return newptr;
+}
+
 int main(int argc, char **argv) {
 
     if(argc != 3) {
@@ -54,7 +83,9 @@ int main(int argc, char **argv) {
     int width, height, channels;
     unsigned char *image = stbi_load(argv[1], &width, &height, &channels, 0);
     size_t size  = width*height*channels;
-    unsigned char *outputImage = (unsigned char*)malloc(size);
+    unsigned char *outputImage;
+
+    CHECKED_CUDA_API(cudaMallocHost(&outputImage, size));
 
     unsigned char * image_d, * outputImage_d;
 
@@ -83,10 +114,13 @@ int main(int argc, char **argv) {
 
     CHECKED_CUDA_API(cudaMemcpy(outputImage, outputImage_d, size, cudaMemcpyDeviceToHost));
 
-    cudaFree(outputImage_d);
-    cudaFree(image_d);
+    CHECKED_CUDA_API(cudaFree(outputImage_d));
+    CHECKED_CUDA_API(cudaFree(image_d));
 
     stbi_write_png(argv[2],width, height, channels, outputImage, width * channels);
+
+    CHECKED_CUDA_API(cudaFreeHost(outputImage));
+    CHECKED_CUDA_API(cudaFreeHost(image));
 
     return(0);
 }
