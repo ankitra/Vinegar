@@ -97,25 +97,39 @@ int main(int argc, char **argv) {
         exit(255);
     }
 
-        #define invocation do {                                                         \
+        #define preinvocation do {                                                      \
         CHECKED_CUDA_API(cudaMalloc((void **) &image_d,size));                          \
         CHECKED_CUDA_API(cudaMalloc((void **) &outputImage_d,size));                    \
         CHECKED_CUDA_API(cudaMallocHost(&outputImage, size));                           \
         CHECKED_CUDA_API(cudaMemcpy(image_d, image, size, cudaMemcpyHostToDevice));     \
-        softenImageRGBKernel<<<blocksInGrid, threadsInBlock>>>(image_d, outputImage_d,  \
-        width, height, channels);                                                       \ 
-        CHECKED_CUDA_API(cudaGetLastError());                                           \                         
-        CHECKED_CUDA_API(cudaDeviceSynchronize());                                      \
-        CHECKED_CUDA_API(cudaMemcpy(outputImage, outputImage_d, size,                   \
-            cudaMemcpyDeviceToHost));                                                   \
-        } while(0)
-
-    DEBUG_LOG("Invoking Kernel");
-    TIME_CUDA("Convolution Kernel", invocation);
+        } while(0)              
     
-    CHECKED_CUDA_API(cudaFree(outputImage_d));
-    CHECKED_CUDA_API(cudaFree(image_d));
+        DEBUG_LOG("Memory and tranfer...");
+        TIME_CUDA("Memory Ops", preinvocation);
+
+        DEBUG_LOG("Convolution...");
+        #define invocation do {  
+            softenImageRGBKernel<<<blocksInGrid, threadsInBlock>>>(image_d, outputImage_d,  \
+                width, height, channels);                                                   \
+        } while(0)              
+
+                                                                
+
+    TIME_CUDA("Convolution",CHECKED_CUDA_API(invocation));
+
+        #define postinvocation do {                                                         \
+            CHECKED_CUDA_API(cudaGetLastError());                                           \                         
+            CHECKED_CUDA_API(cudaDeviceSynchronize());                                      \
+            CHECKED_CUDA_API(cudaMemcpy(outputImage, outputImage_d, size,                   \
+                cudaMemcpyDeviceToHost));                                                   \
+            CHECKED_CUDA_API(cudaFree(outputImage_d));                                      \
+            CHECKED_CUDA_API(cudaFree(image_d));                                            \
+        } while(0)              
+    
+    TIME_CUDA("Post Invocation", CHECKED_CUDA_API(postinvocation));
+
     stbi_write_png(argv[2],width, height, channels, outputImage, width * channels);
+
     CHECKED_CUDA_API(cudaFreeHost(outputImage));
     CHECKED_CUDA_API(cudaFreeHost(image));
 
