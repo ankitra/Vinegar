@@ -85,8 +85,6 @@ int main(int argc, char **argv) {
     size_t size  = width*height*channels;
     unsigned char *outputImage;
 
-    CHECKED_CUDA_API(cudaMallocHost(&outputImage, size));
-
     unsigned char * image_d, * outputImage_d;
 
     dim3 threadsInBlock(8, 8, 1);
@@ -99,26 +97,25 @@ int main(int argc, char **argv) {
         exit(255);
     }
 
-    CHECKED_CUDA_API(cudaMalloc((void **) &image_d,size));
-    CHECKED_CUDA_API(cudaMalloc((void **) &outputImage_d,size));
+        #define invocation do {                                                         \
+        CHECKED_CUDA_API(cudaMalloc((void **) &image_d,size));                          \
+        CHECKED_CUDA_API(cudaMalloc((void **) &outputImage_d,size));                    \
+        CHECKED_CUDA_API(cudaMallocHost(&outputImage, size));                           \
+        CHECKED_CUDA_API(cudaMemcpy(image_d, image, size, cudaMemcpyHostToDevice));     \
+        softenImageRGBKernel<<<blocksInGrid, threadsInBlock>>>(image_d, outputImage_d,  \
+        width, height, channels);                                                       \ 
+        CHECKED_CUDA_API(cudaGetLastError());                                           \                         
+        CHECKED_CUDA_API(cudaDeviceSynchronize());                                      \
+        CHECKED_CUDA_API(cudaMemcpy(outputImage, outputImage_d, size,                   \
+            cudaMemcpyDeviceToHost));                                                   \
+        } while(0)
 
-    CHECKED_CUDA_API(cudaMemcpy(image_d, image, size, cudaMemcpyHostToDevice));
-
-    #define invocation softenImageRGBKernel<<<blocksInGrid, threadsInBlock>>>(image_d, outputImage_d, width, height, channels)
     DEBUG_LOG("Invoking Kernel");
     TIME_CUDA("Convolution Kernel", invocation);
     
-    CHECKED_CUDA_API(cudaGetLastError());                                                                    
-    
-    CHECKED_CUDA_API(cudaDeviceSynchronize());
-
-    CHECKED_CUDA_API(cudaMemcpy(outputImage, outputImage_d, size, cudaMemcpyDeviceToHost));
-
     CHECKED_CUDA_API(cudaFree(outputImage_d));
     CHECKED_CUDA_API(cudaFree(image_d));
-
     stbi_write_png(argv[2],width, height, channels, outputImage, width * channels);
-
     CHECKED_CUDA_API(cudaFreeHost(outputImage));
     CHECKED_CUDA_API(cudaFreeHost(image));
 
