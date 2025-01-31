@@ -1,7 +1,7 @@
 #include "vinegar.h"
 
 void * recipie2_malloc(size_t);
-void * recipie2_realloc(void *, size_t);
+void * recipie2_realloc(void *, size_t, size_t);
 void   recipie2_free(void *);
 
 #define STB_IMAGE_IMPLEMENTATION
