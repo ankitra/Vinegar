@@ -8,7 +8,7 @@ void   recipie2_free(void *);
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #define STBI_MALLOC(sz)           recipie2_malloc(sz)
 #define STBI_REALLOC(p,newsz)     
-#define STBI_REALLOC_SIZED(p,oldsz,newsz) recipie2_realloc(p,oldsz,newsz)
+#define STBI_REALLOC_SIZED(p,oldsz,newsz) recipie2_realloc((p),(oldsz),(newsz))
 #define STBI_FREE(p)              recipie2_free(p)
 
 
