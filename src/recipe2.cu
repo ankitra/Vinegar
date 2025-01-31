@@ -89,7 +89,7 @@ int main(int argc, char **argv) {
 
     unsigned char * image_d, * outputImage_d;
 
-    dim3 threadsInBlock(16, 16, 1);
+    dim3 threadsInBlock(8, 8, 1);
     dim3 blocksInGrid((height + threadsInBlock.x -1)/threadsInBlock.x,
                       (width + threadsInBlock.y -1)/threadsInBlock.y, 
                       channels);
