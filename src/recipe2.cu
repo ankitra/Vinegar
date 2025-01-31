@@ -92,7 +92,7 @@ int main(int argc, char **argv) {
                       (width + threadsInBlock.y -1)/threadsInBlock.y, 
                       channels);
 
-    if(image == NULL || outputImage == NULL) {
+    if(image == NULL) {
         ERROR_LOG("Can not read inputs. %s does not exists or too big for main memory\n", argv[1]);
         exit(255);
     }
